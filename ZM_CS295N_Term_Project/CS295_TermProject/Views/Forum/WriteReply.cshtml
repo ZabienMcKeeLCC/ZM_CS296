@@ -1,0 +1,33 @@
+﻿
+@model ForumPostModel
+@{
+    ViewData["Title"] = "WriteReply";
+}
+
+<h1>Write a Reponse</h1>
+<form asp-action="WriteReply" asp-route-postId=@ViewBag.Post.PostId method="post" style="background-color:lightgray">
+    <div class="container">
+        <div class="p-2 m-1">
+
+            <div>
+                <label asp-for="Username">Username: </label><br />
+                <input asp-for="Username" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div><br />
+
+            <div>
+                <div>
+                    <label asp-for="Message">Message: </label><br />
+                    <textarea asp-for="Message"></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
+            </div>
+
+        </div>
+        <button type="submit" class="btn btn-primary btn-md" style="text-align:center">Submit</button>
+    </div>
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+</form>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
