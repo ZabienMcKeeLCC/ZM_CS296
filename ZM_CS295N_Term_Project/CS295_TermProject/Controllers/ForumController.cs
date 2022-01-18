@@ -96,22 +96,22 @@ namespace CS295_TermProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult WriteReply(ForumReplyModel postModel, int postId)
+        public IActionResult WriteReply(ForumReplyModel replyModel, int postId)
         {
-            ViewBag.Post = postModel;
+            ViewBag.Post = replyModel;
             DateTime clock = DateTime.Now;
             if (ModelState.IsValid)
             {
-                postModel.Date = clock.ToString();
-                postModel.PostId = postId;
+                replyModel.Date = clock.ToString();
+                replyModel.PostId = postId;
                 //replyContext.replies.Add(postModel);
                 //replyContext.SaveChanges();
-                replyRepo.Insert(postModel);
+                replyRepo.Insert(replyModel);
                 replyRepo.Save();
 
             }
 
-            return RedirectToAction("ForumPost",postModel);
+            return RedirectToAction("ForumPost", replyModel);
         }
 
 
@@ -149,7 +149,6 @@ namespace CS295_TermProject.Controllers
         {
             //replyContext.replies.Remove(reply);
             //replyContext.SaveChanges();
-            ForumPostModel temp = postRepo.SelectById(reply.PostId);
             replyRepo.Delete(reply);
             replyRepo.Save();
             return RedirectToAction("Browser");
