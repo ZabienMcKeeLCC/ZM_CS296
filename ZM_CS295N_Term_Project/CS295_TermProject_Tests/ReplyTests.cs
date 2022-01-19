@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using xUnit.Framework;
 using CS295_TermProject.Models;
 using CS295_TermProject.Interfaces;
 using System.Linq;
@@ -8,11 +8,14 @@ namespace CS295_TermProject_Tests
     [TestFixture]
     public class ReplyTests
     {
-        public ReplyContext ctx { get; set; }
-        
-        public ReplyTests(ReplyContext inputContext)
+        public IReplyRepository ctx { get; set; }
+
+        public ReplyTests(IReplyRepository injectedRepo) 
         {
-            ctx = inputContext;
+            this.ctx = injectedRepo;
+        }
+        public ReplyTests()
+        {
         }
 
         [SetUp]
@@ -24,15 +27,15 @@ namespace CS295_TermProject_Tests
         public void GetById()
         {
             
-            ForumReplyModel model = new ForumReplyModel();
-            model.Username = "Mr. Testerson";
-            model.Message = "This is a Test Message";
+            ForumReplyModel model1 = new ForumReplyModel();
+            model1.ReplyId = 5;
+            model1.Username = "Mr. Testerson";
+            model1.Message = "This is a Test Message";
 
-            ctx.replies.Add(model);
+            ctx.Insert(model1);
 
-            var list = ctx.replies.OrderByDescending(m => m.ReplyId).ToList();
-            model = list[0];
-            Assert.AreEqual("This is a Test Message", model.Message);
+            ForumReplyModel model2 = ctx.SelectById(model1.ReplyId);
+            Assert.AreEqual("This is a Test Message", model2.Message);
         }
 
         [Test]
@@ -43,16 +46,14 @@ namespace CS295_TermProject_Tests
             model.Username = "Mr. Testerson";
             model.Message = "This is a Test Message";
 
-            ctx.replies.Add(model);
+            ctx.Insert(model);
 
-            var list = ctx.replies.OrderByDescending(m => m.PostId).ToList();
-            model = list[0];
+            model = ctx.SelectById(model.ReplyId);
             Assert.AreEqual("This is a Test Message", model.Message);
 
-            ctx.replies.Remove(model);
-            ctx.SaveChanges();
+            ctx.Delete(model);
 
-            Assert.IsNull(ctx.replies.OrderByDescending(m => m.PostId).ToList());
+            Assert.IsNull(ctx.SelectById(model.ReplyId));
         }
     }
 }
