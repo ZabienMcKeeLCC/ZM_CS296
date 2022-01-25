@@ -31,11 +31,11 @@ namespace CS295_TermProject
 
             services.AddControllersWithViews();
             services.AddDbContext<PostContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PostContext")));
-            services.AddDbContext<ReplyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ReplyContext")));
+           
             services.AddTransient<IPostRepository, PostRepository>();
             services.AddTransient<IReplyRepository, ReplyRepository>();
 
-            services.AddTransient<IReplyRepository, FakeReplyRepository>();
+            //services.AddTransient<IReplyRepository, FakeReplyRepository>();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
