@@ -4,6 +4,7 @@ using CS295_TermProject.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,9 +32,13 @@ namespace CS295_TermProject
 
             services.AddControllersWithViews();
             services.AddDbContext<PostContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PostContext")));
-           
+
             services.AddTransient<IPostRepository, PostRepository>();
             services.AddTransient<IReplyRepository, ReplyRepository>();
+
+            services.AddIdentity<AppUser, IdentityRole>()
+            .AddEntityFrameworkStores<PostContext>()
+            .AddDefaultTokenProviders();
 
             //services.AddTransient<IReplyRepository, FakeReplyRepository>();
         }
