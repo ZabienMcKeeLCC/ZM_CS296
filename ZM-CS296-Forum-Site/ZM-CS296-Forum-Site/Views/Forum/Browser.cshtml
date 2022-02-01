@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "Browser";
+}
+<div class="text-center">
+    <h1>Forum Browser</h1><hr />
+
+    <a asp-controller="Forum" asp-action="WritePost" asp-route-id="Forum">Post a question</a>
+
+    @using (Html.BeginForm("Browser", "Forum", FormMethod.Post))
+    {
+
+        <form asp-action="browser" asp-controller="Forum" method="POST">
+            <input type="text" name="search" id="search" />
+            <button type ="submit" id="SearchBar">Search</button>
+        </form><br />
+    }
+
+
+    @foreach (ZM_CS296_Forum_Site.Models.ForumPostModel comment in (List<ZM_CS296_Forum_Site.Models.ForumPostModel>)ViewBag.comments)
+
+    {
+
+        <div class="card border bg-light row">
+
+            <a asp-controller="Forum" asp-action="ForumPost" asp-route-id="Forum" asp-route-postId=@comment.PostId>
+                <p>@comment.Title</p>
+            </a>
+            <p>Posted At: @comment.Date</p>
+            <form asp-controller="Forum" asp-action="DeletePost" asp-route-postId="@comment.PostId" method="post">
+                <button type="submit" class="btn btn-primary btn-sm">Remove</button>
+            </form>
+        </div>
+    }
+</div>
