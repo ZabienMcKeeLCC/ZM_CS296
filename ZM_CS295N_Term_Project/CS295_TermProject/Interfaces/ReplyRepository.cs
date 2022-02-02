@@ -9,8 +9,8 @@ namespace CS295_TermProject.Interfaces
     public class ReplyRepository : IReplyRepository
     {
 
-        private ReplyContext ctx { get; set; }
-        public ReplyRepository(ReplyContext inputContext)
+        private PostContext ctx { get; set; }
+        public ReplyRepository(PostContext inputContext)
         {
             ctx = inputContext;
         }
