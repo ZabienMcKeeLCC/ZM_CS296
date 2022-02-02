@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ZM_CS296_Forum_Site.Models
 {
-    public class MessageContext : IdentityDbContext
+    public class MessageContext : IdentityDbContext<AppUser>
     {
         public MessageContext(DbContextOptions<MessageContext> options) : base(options) { }
 

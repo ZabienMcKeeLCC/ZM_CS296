@@ -8,19 +8,10 @@
 <form asp-action="WriteReply" asp-route-postId=@ViewBag.Post.PostId method="post" style="background-color:lightgray">
     <div class="container">
         <div class="p-2 m-1">
-
             <div>
-                <label asp-for="Username">Username: </label><br />
-                <input asp-for="Username" />
-                <span asp-validation-for="Username" class="text-danger"></span>
-            </div><br />
-
-            <div>
-                <div>
-                    <label asp-for="Message">Message: </label><br />
-                    <textarea asp-for="Message"></textarea>
-                    <span asp-validation-for="Message" class="text-danger"></span>
-                </div>
+                <label asp-for="Message">Message: </label><br />
+                <textarea asp-for="Message"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
             </div>
 
         </div>

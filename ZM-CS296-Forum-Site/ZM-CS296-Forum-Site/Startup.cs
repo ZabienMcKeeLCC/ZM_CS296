@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ZM_CS296_Forum_Site.Interfaces;
 using ZM_CS296_Forum_Site.Models;
@@ -31,7 +32,7 @@ namespace ZM_CS296_Forum_Site
 
             services.AddControllersWithViews();
             services.AddDbContext<MessageContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MessageContext")));
-
+            services.Configure<IdentityOptions>(options => options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
             services.AddTransient<IPostRepository, PostRepository>();
             services.AddTransient<IReplyRepository, ReplyRepository>();
 
@@ -58,7 +59,7 @@ namespace ZM_CS296_Forum_Site
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

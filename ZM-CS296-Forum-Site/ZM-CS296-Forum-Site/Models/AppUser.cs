@@ -9,7 +9,7 @@ namespace ZM_CS296_Forum_Site.Models
 {
     public class AppUser : IdentityUser
     {
-        [StringLength(20, MinimumLength = 5)]
-        public string Name { get; set; }
+        //[StringLength(20, MinimumLength = 5)]
+        //public string Name { get; set; }
     }
 }

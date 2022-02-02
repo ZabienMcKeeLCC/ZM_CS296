@@ -13,8 +13,7 @@ namespace ZM_CS296_Forum_Site.Models
 
         [Key]
         public int PostId { get; set; }
-
-        [StringLength(20, MinimumLength = 5, ErrorMessage = "Enter a Username between 5 and 20 characters")]
+        
         [Required]
         public string Username { get; set; }
 

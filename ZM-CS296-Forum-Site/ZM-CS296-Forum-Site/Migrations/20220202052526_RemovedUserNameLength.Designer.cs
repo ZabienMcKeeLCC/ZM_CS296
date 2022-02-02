@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZM_CS296_Forum_Site.Models;
 
 namespace ZM_CS296_Forum_Site.Migrations
 {
     [DbContext(typeof(MessageContext))]
-    partial class MessageContextModelSnapshot : ModelSnapshot
+    [Migration("20220202052526_RemovedUserNameLength")]
+    partial class RemovedUserNameLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

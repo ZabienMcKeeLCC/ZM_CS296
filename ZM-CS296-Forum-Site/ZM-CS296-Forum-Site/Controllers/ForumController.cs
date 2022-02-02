@@ -7,20 +7,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace CS295_TermProject.Controllers
 {
+
     public class ForumController : Controller
     {
         //private ReplyContext replyContext { get; set; }
         private IPostRepository postRepo;
         private IReplyRepository replyRepo;
 
-        public ForumController(IPostRepository postCtx, IReplyRepository replyCtx)
+        UserManager<AppUser> userManager;
+        public ForumController(IPostRepository postCtx, IReplyRepository replyCtx, UserManager<AppUser> manager)
         {
             postRepo = postCtx;
             replyRepo = replyCtx;
+            userManager = manager;
         }
 
         [HttpGet]
@@ -57,13 +60,13 @@ namespace CS295_TermProject.Controllers
         [HttpPost]
         public IActionResult WritePost(ForumPostModel model)
         {
+            model.Username = userManager.GetUserAsync(User).Result.UserName.ToString();
             DateTime clock = DateTime.Now;
-            if (ModelState.IsValid)
-            {
-                model.Date = clock.ToString();
+            model.Date = clock.ToString();
 
+            if (!ModelState.IsValid)
+            {
                 postRepo.Insert(model);
-                postRepo.Save();
             }
                 
                 return RedirectToAction("Browser",model);
@@ -98,6 +101,7 @@ namespace CS295_TermProject.Controllers
         [HttpPost]
         public IActionResult WriteReply(ForumReplyModel replyModel, int postId)
         {
+            replyModel.Username = userManager.GetUserAsync(User).Result.UserName.ToString();
             ViewBag.Post = replyModel;
             DateTime clock = DateTime.Now;
             if (ModelState.IsValid)

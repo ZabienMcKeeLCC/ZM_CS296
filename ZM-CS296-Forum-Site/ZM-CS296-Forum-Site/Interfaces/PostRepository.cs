@@ -17,11 +17,13 @@ namespace ZM_CS296_Forum_Site.Interfaces
         public void Delete(ForumPostModel obj)
         {
             ctx.posts.Remove(obj);
+            ctx.SaveChanges();
         }
 
         public void Insert(ForumPostModel obj)
         {
             ctx.posts.Add(obj);
+            ctx.SaveChanges();
         }
 
         public void Save()
