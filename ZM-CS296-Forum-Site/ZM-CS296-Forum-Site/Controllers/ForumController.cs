@@ -58,34 +58,35 @@ namespace CS295_TermProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult WritePost(ForumPostModel model)
+        public IActionResult WritePost(ForumPostModel postModel)
         {
-            model.Username = userManager.GetUserAsync(User).Result.UserName.ToString();
-            DateTime clock = DateTime.Now;
-            model.Date = clock.ToString();
 
-            if (!ModelState.IsValid)
+            postModel.Username = userManager.GetUserAsync(User).Result.UserName;
+            DateTime clock = DateTime.Now;
+            postModel.Date = clock.ToString();
+
+            if (ModelState.IsValid)
             {
-                postRepo.Insert(model);
+                postRepo.Insert(postModel);
             }
-                
-                return RedirectToAction("Browser",model);
+
+            return RedirectToAction("Browser", postModel);
         }
 
         //Page that displays actual post
         [HttpGet]
         public IActionResult ForumPost(int postId)
         {
-            List<ForumReplyModel> allReplies = (List < ForumReplyModel >)replyRepo.SelectAll();
+            List<ForumReplyModel> allReplies = (List<ForumReplyModel>)replyRepo.SelectAll();
             List<ForumReplyModel> linkedReplies = new List<ForumReplyModel>();
             ViewBag.Id = postId;
             ViewBag.Post = postRepo.SelectById(postId);
-            
-            foreach(ForumReplyModel reply in allReplies)
+
+            foreach (ForumReplyModel reply in allReplies)
             {
-                if(reply.PostId == postId) { linkedReplies.Add(reply); }
-                    
-                
+                if (reply.PostId == postId) { linkedReplies.Add(reply); }
+
+
             }
 
             ViewBag.replies = linkedReplies;
@@ -102,12 +103,14 @@ namespace CS295_TermProject.Controllers
         public IActionResult WriteReply(ForumReplyModel replyModel, int postId)
         {
             replyModel.Username = userManager.GetUserAsync(User).Result.UserName.ToString();
-            ViewBag.Post = replyModel;
+            //ViewBag.Post = replyModel;
             DateTime clock = DateTime.Now;
+            replyModel.Date = clock.ToString();
+            replyModel.PostId = postId;
+
             if (ModelState.IsValid)
             {
-                replyModel.Date = clock.ToString();
-                replyModel.PostId = postId;
+
                 //replyContext.replies.Add(postModel);
                 //replyContext.SaveChanges();
                 replyRepo.Insert(replyModel);
@@ -137,7 +140,7 @@ namespace CS295_TermProject.Controllers
         {
             postRepo.Delete(post);
             DeleteReplyByPostId(post.PostId);
-            
+
             postRepo.Save();
             return RedirectToAction("Browser");
         }
@@ -160,9 +163,9 @@ namespace CS295_TermProject.Controllers
 
         public IActionResult DeleteReplyByPostId(int postId)
         {
-            foreach(ForumReplyModel reply in replyRepo.SelectAll())
+            foreach (ForumReplyModel reply in replyRepo.SelectAll())
             {
-                if(reply.PostId == postId)
+                if (reply.PostId == postId)
                 {
                     DeleteReply(reply);
                 }

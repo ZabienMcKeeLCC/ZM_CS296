@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZM_CS296_Forum_Site.Models;
 
 namespace ZM_CS296_Forum_Site.Migrations
 {
     [DbContext(typeof(MessageContext))]
-    partial class MessageContextModelSnapshot : ModelSnapshot
+    [Migration("20220204054928_NewMigration")]
+    partial class NewMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,6 +238,7 @@ namespace ZM_CS296_Forum_Site.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PostId");
@@ -262,7 +265,9 @@ namespace ZM_CS296_Forum_Site.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("ReplyId");
 

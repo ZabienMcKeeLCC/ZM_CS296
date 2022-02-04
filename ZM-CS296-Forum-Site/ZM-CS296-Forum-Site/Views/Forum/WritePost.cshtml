@@ -3,7 +3,10 @@
 @{
     ViewData["Title"] = "WritePost";
 }
+@using Microsoft.AspNetCore.Identity
+@using ZM_CS296_Forum_Site.Models;
 
+@inject SignInManager<AppUser> signInManager
 
 
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.0.min.js"></script>
@@ -14,6 +17,7 @@
 <form asp-action="WritePost" method="post" style="background-color:lightgray">
     <div class="container">
         <div class="p-3 m-2">
+
 
             <div>
                 <br /><br />

@@ -14,7 +14,6 @@ namespace ZM_CS296_Forum_Site.Models
         [Key]
         public int PostId { get; set; }
         
-        [Required]
         public string Username { get; set; }
 
         [StringLength(100, MinimumLength = 10, ErrorMessage = "Post Titles need to be between 10 and 100 characters")]

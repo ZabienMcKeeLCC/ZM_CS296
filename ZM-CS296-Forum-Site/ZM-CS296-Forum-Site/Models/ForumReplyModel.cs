@@ -14,8 +14,6 @@ namespace ZM_CS296_Forum_Site.Models
         public int ReplyId { get; set; }
         public int PostId { get; set; }
 
-        [StringLength(20, MinimumLength = 5, ErrorMessage = "Enter a Username between 5 and 20 characters")]
-        [Required]
         public string Username { get; set; }
 
         [StringLength(2500,MinimumLength = 10, ErrorMessage = "Posts need to be between 10 and 2500 characters")]
