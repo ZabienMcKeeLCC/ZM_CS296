@@ -17,10 +17,12 @@ namespace ZM_CS296_Forum_Site
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                    Host.CreateDefaultBuilder(args)
+                        .ConfigureWebHostDefaults(webBuilder =>
+                        {
+                            webBuilder.UseStartup<Startup>()
+                            .UseDefaultServiceProvider(
+                                 options => options.ValidateScopes = false);
+                        });
     }
 }
