@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ZM_CS296_Forum_Site.Data;
 using ZM_CS296_Forum_Site.Interfaces;
 using ZM_CS296_Forum_Site.Models;
 
@@ -68,6 +69,8 @@ namespace ZM_CS296_Forum_Site
                 name: "default",
                 pattern: "{controller=Home}/{action=Home}/{id?}");
             });
+
+            SeedData.SeedAdminUser(app.ApplicationServices).Wait();
         }
     }
 }

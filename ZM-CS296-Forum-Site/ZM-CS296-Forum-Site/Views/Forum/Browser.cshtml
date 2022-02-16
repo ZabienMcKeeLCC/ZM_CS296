@@ -34,15 +34,20 @@
 
     {
 
-        <div class="card border bg-light row">
+<div class="card border bg-light row">
 
-            <a asp-controller="Forum" asp-action="ForumPost" asp-route-id="Forum" asp-route-postId=@comment.PostId>
-                <p>@comment.Title</p>
-            </a>
-            <p>Posted At: @comment.Date</p>
-            <form asp-controller="Forum" asp-action="DeletePost" asp-route-postId="@comment.PostId" method="post">
-                <button type="submit" class="btn btn-primary btn-sm">Remove</button>
-            </form>
-        </div>
+    <a asp-controller="Forum" asp-action="ForumPost" asp-route-id="Forum" asp-route-postId=@comment.PostId>
+        <p>@comment.Title</p>
+    </a>
+    <p>Posted At: @comment.Date</p>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <form asp-controller="Forum" asp-action="DeletePost" asp-route-postId="@comment.PostId" method="post">
+            <button type="submit" class="btn btn-primary btn-sm">Remove</button>
+        </form>
+    }
+
+</div>
     }
 </div>

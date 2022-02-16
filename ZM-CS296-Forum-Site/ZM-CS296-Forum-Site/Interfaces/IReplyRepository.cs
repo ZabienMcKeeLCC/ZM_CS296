@@ -8,9 +8,9 @@ namespace ZM_CS296_Forum_Site.Interfaces
 {
     public interface IReplyRepository
     {
-        IEnumerable<ForumReplyModel> SelectAll();
+        public Task<IEnumerable<ForumReplyModel>> SelectAllAsync();
         void Insert(ForumReplyModel obj);
-        ForumReplyModel SelectById(int id);
+        Task<ForumReplyModel> SelectById(int id);
         void Delete(ForumReplyModel obj);
         void Save();
     }

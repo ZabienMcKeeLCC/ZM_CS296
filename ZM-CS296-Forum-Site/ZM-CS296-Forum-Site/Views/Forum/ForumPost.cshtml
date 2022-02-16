@@ -21,14 +21,20 @@
     {
     <p>
         <div class="card border bg-light row">
-          <!---  @reply.ReplyId|@reply.PostId -->
-            
+            <!---  @reply.ReplyId|@reply.PostId -->
+
             <b>@reply.Username: </b>
             @reply.Message
             <p>Posted At: @reply.Date</p>
-            <form asp-controller="Forum" asp-action="DeleteReply" asp-route-id="ForumDelete" asp-route-replyId=@reply.ReplyId method="post">
-                <button type="submit" class="btn btn-primary btn-sm">Remove</button>
-            </form>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <form asp-controller="Forum" asp-action="DeleteReply" asp-route-id="ForumDelete" asp-route-replyId=@reply.ReplyId method="post">
+                    <button type="submit" class="btn btn-primary btn-sm">Remove</button>
+                </form>
+            }
+
+            
         </div>
     </p>
     }
