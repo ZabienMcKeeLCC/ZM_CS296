@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CS295_TermProject.Controllers
 {
@@ -128,6 +129,7 @@ namespace CS295_TermProject.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [Authorize(Roles="Admin")]
         [HttpGet]
         public IActionResult DeletePost(int postId)
         {
