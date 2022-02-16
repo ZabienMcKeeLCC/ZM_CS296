@@ -25,5 +25,10 @@ namespace ZM_CS296_Forum_Site.Models
         public string Message { get; set; }
 
         public string Date { get; set; }
+
+        public static implicit operator List<object>(ForumPostModel v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

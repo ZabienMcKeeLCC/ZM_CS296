@@ -28,27 +28,27 @@ namespace CS295_TermProject.Controllers
         }
 
         [HttpGet]
-        public IActionResult Browser()
+        public async Task<IActionResult> BrowserAsync()
         {
             //List<ForumPostModel> comments = ForumDB.GetMessages();
             ViewBag.Search = "";
-            ViewBag.replies = replyRepo.SelectAll();
-            ViewBag.comments = postRepo.SelectAll();
+            ViewBag.replies = await replyRepo.SelectAllAsync();
+            ViewBag.comments = await postRepo.SelectAllAsync();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Browser(string search = "")
+        public async Task<IActionResult> BrowserAsync(string search = "")
         {
             if (!string.IsNullOrEmpty(search))
             {
-                ViewBag.comments = postRepo.SelectWithFilter(search).ToList();
+                ViewBag.comments = postRepo.SelectWithFilterAsync(search);
                 var returnList = ViewBag.comments;
                 return View(returnList);
             }
             ViewBag.Search = search;
-            ViewBag.replies = replyRepo.SelectAll();
-            ViewBag.comments = postRepo.SelectAll();
+            ViewBag.replies = await replyRepo.SelectAllAsync();
+            ViewBag.comments = await postRepo.SelectAllAsync();
             return View(search);
         }
 
@@ -76,12 +76,12 @@ namespace CS295_TermProject.Controllers
 
         //Page that displays actual post
         [HttpGet]
-        public IActionResult ForumPost(int postId)
+        public async Task<IActionResult> ForumPost(int postId)
         {
-            List<ForumReplyModel> allReplies = (List<ForumReplyModel>)replyRepo.SelectAll();
+            List<ForumReplyModel> allReplies = (List<ForumReplyModel>)await replyRepo.SelectAllAsync();
             List<ForumReplyModel> linkedReplies = new List<ForumReplyModel>();
             ViewBag.Id = postId;
-            ViewBag.Post = postRepo.SelectById(postId);
+            ViewBag.Post = await postRepo.SelectByIdAsync(postId);
 
             foreach (ForumReplyModel reply in allReplies)
             {
@@ -133,7 +133,7 @@ namespace CS295_TermProject.Controllers
         [HttpGet]
         public IActionResult DeletePost(int postId)
         {
-            var post = postRepo.SelectById(postId);
+            var post = postRepo.SelectByIdAsync(postId);
             return View(post);
         }
 
@@ -163,9 +163,10 @@ namespace CS295_TermProject.Controllers
             return RedirectToAction("Browser");
         }
 
-        public IActionResult DeleteReplyByPostId(int postId)
+        public async Task<IActionResult> DeleteReplyByPostId(int postId)
         {
-            foreach (ForumReplyModel reply in replyRepo.SelectAll())
+            List<ForumReplyModel> replies = (List<ForumReplyModel>)await replyRepo.SelectAllAsync();
+            foreach (ForumReplyModel reply in replies)
             {
                 if (reply.PostId == postId)
                 {

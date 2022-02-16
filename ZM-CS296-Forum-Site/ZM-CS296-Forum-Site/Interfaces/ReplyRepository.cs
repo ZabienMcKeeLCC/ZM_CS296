@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ZM_CS296_Forum_Site.Interfaces
 {
@@ -31,15 +32,20 @@ namespace ZM_CS296_Forum_Site.Interfaces
             ctx.SaveChanges();
         }
 
-        public IEnumerable<ForumReplyModel> SelectAll()
+        public async Task<IEnumerable<ForumReplyModel>> SelectAllAsync()
         {
-            
-            return ctx.replies.ToList();
+
+            List<ForumReplyModel> list = await ctx.replies.OrderByDescending(m => m.Date).ToListAsync<ForumReplyModel>();
+            if (list == null)
+            {
+                return new List<ForumReplyModel>();
+            }
+            return list;
         }
 
-        public ForumReplyModel SelectById(int id)
+        public async Task<ForumReplyModel> SelectById(int id)
         {
-            return ctx.replies.Find(id);
+            return await ctx.replies.FindAsync(id);
         }
     }
 }

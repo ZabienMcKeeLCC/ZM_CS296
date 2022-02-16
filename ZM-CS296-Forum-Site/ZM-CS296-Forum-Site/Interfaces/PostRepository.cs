@@ -1,4 +1,6 @@
-﻿using ZM_CS296_Forum_Site.Models;
+﻿
+using ZM_CS296_Forum_Site.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,9 +33,9 @@ namespace ZM_CS296_Forum_Site.Interfaces
             ctx.SaveChanges();
         }
 
-        public IEnumerable<ForumPostModel> SelectAll()
+        public async Task<IEnumerable<ForumPostModel>> SelectAllAsync()
         {
-            var list = ctx.posts.OrderByDescending(m => m.Date).ToList();
+            List<ForumPostModel> list = await ctx.posts.OrderByDescending(m => m.Date).ToListAsync<ForumPostModel>();
             if(list == null)
             {
                 return new List<ForumPostModel>();
@@ -41,21 +43,21 @@ namespace ZM_CS296_Forum_Site.Interfaces
             return list;
         }
 
-        public ForumPostModel SelectById(int id)
+        public async Task<ForumPostModel> SelectByIdAsync(int id)
         {
-            return ctx.posts.Find(id);
+            return await ctx.posts.FindAsync(id);
         }
 
-        public IEnumerable<ForumPostModel> SelectWithFilter(string filter)
+        public async Task<IEnumerable<ForumPostModel>> SelectWithFilterAsync(string filter)
         {
             IEnumerable<ForumPostModel> posts;
             if (!String.IsNullOrEmpty(filter))
             {
-                 posts = ctx.posts.Where(s => s.Title.ToLower().Contains(filter.ToLower())).AsEnumerable();
+                 posts = await ctx.posts.Where(s => s.Title.ToLower().Contains(filter.ToLower())).ToListAsync<ForumPostModel>();
             }
             else
             {
-                posts = ctx.posts.ToList();
+                posts = await ctx.posts.ToListAsync<ForumPostModel>();
             }
             return posts;
         }

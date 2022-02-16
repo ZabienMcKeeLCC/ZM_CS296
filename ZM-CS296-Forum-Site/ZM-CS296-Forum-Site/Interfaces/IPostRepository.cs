@@ -9,11 +9,12 @@ namespace ZM_CS296_Forum_Site.Interfaces
     public interface IPostRepository
     {
 
-        IEnumerable<ForumPostModel> SelectAll();
+      
         void Insert(ForumPostModel obj);
-        ForumPostModel SelectById(int id);
+        public Task<ForumPostModel> SelectByIdAsync(int id);
+        public Task<IEnumerable<ForumPostModel>> SelectAllAsync();
+        public Task<IEnumerable<ForumPostModel>> SelectWithFilterAsync(string filter);
         void Delete(ForumPostModel obj);
-        public IEnumerable<ForumPostModel> SelectWithFilter(string filter);
         void Save();
 
     }
