@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace CS295_TermProject.Controllers
 {
@@ -32,9 +33,8 @@ namespace CS295_TermProject.Controllers
         {
             //List<ForumPostModel> comments = ForumDB.GetMessages();
             ViewBag.Search = "";
-            ViewBag.replies = await replyRepo.SelectAllAsync();
             ViewBag.comments = await postRepo.SelectAllAsync();
-            return View();
+            return await Task.Run(() => View());
         }
 
         [HttpPost]
@@ -52,17 +52,31 @@ namespace CS295_TermProject.Controllers
             return View(search);
         }
 
+
         [HttpGet]
-        public IActionResult WritePost()
+        public async Task<IActionResult> ForumPost(int postId)
         {
-            return View();
+
+            ViewBag.Post = await postRepo.SelectByIdAsync(postId);
+
+            return await Task.Run(() => View());
+        }
+
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ WRITE POSTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        //-----Posts-----
+        [HttpGet]
+        public async Task<IActionResult> WritePost()
+        {
+            return await Task.Run(() => View());
         }
 
         [HttpPost]
-        public IActionResult WritePost(ForumPostModel postModel)
+        public async Task<IActionResult> WritePost(ForumPostModel postModel)
         {
 
-            postModel.Username = userManager.GetUserAsync(User).Result.UserName;
+            postModel.Poster = userManager.GetUserAsync(User).Result;
             DateTime clock = DateTime.Now;
             postModel.Date = clock.ToString();
 
@@ -71,64 +85,39 @@ namespace CS295_TermProject.Controllers
                 postRepo.Insert(postModel);
             }
 
-            return RedirectToAction("Browser", postModel);
+            return await Task.Run(() => RedirectToAction("Browser", postModel.PostId));
         }
 
-        //Page that displays actual post
+        //-----Replies-----
         [HttpGet]
-        public async Task<IActionResult> ForumPost(int postId)
+        public async Task<IActionResult> WriteReply(int postId)
         {
-            List<ForumReplyModel> allReplies = (List<ForumReplyModel>)await replyRepo.SelectAllAsync();
-            List<ForumReplyModel> linkedReplies = new List<ForumReplyModel>();
-            ViewBag.Id = postId;
-            ViewBag.Post = await postRepo.SelectByIdAsync(postId);
+            var replyVM = new ReplyVM { PostId = postId };
+            replyVM.Replier = userManager.GetUserAsync(User).Result;
 
-            foreach (ForumReplyModel reply in allReplies)
-            {
-                if (reply.PostId == postId) { linkedReplies.Add(reply); }
-
-
-            }
-
-            ViewBag.replies = linkedReplies;
-            return View();
-        }
-        [HttpGet]
-        public IActionResult WriteReply(ForumPostModel postModel)
-        {
-            ViewBag.Post = postModel;
-            return View();
+            return await Task.Run(() => View(replyVM));
         }
 
         [HttpPost]
-        public IActionResult WriteReply(ForumReplyModel replyModel, int postId)
+        public async Task<IActionResult> WriteReply(ReplyVM replyVM)
         {
-            replyModel.Username = userManager.GetUserAsync(User).Result.UserName.ToString();
-            //ViewBag.Post = replyModel;
+            ForumReplyModel reply = new ForumReplyModel { PostId = replyVM.PostId };
+
             DateTime clock = DateTime.Now;
-            replyModel.Date = clock.ToString();
-            replyModel.PostId = postId;
+            reply.Date = clock.ToString();
+            reply.PostId = replyVM.PostId;
 
-            if (ModelState.IsValid)
-            {
+            Console.WriteLine(replyVM);
+            var post = (from r in postRepo.Posts.Include(r => r.Replies)
+                        where r.PostId == replyVM.PostId
+                        select r).First<ForumPostModel>();
 
-                //replyContext.replies.Add(postModel);
-                //replyContext.SaveChanges();
-                replyRepo.Insert(replyModel);
-                replyRepo.Save();
+            post.AddReply(reply);
+            postRepo.UpdatePostAsync(post);
 
-            }
-
-            return RedirectToAction("ForumPost", replyModel);
+            return RedirectToAction("Browser");
         }
-
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ DELETES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [Authorize(Roles="Admin")]
         [HttpGet]
         public IActionResult DeletePost(int postId)
@@ -140,10 +129,10 @@ namespace CS295_TermProject.Controllers
         [HttpPost]
         public IActionResult DeletePost(ForumPostModel post)
         {
-            postRepo.Delete(post);
+            postRepo.DeleteAsync(post);
             DeleteReplyByPostId(post.PostId);
 
-            postRepo.Save();
+            postRepo.SaveAsync();
             return RedirectToAction("Browser");
         }
         [HttpGet]
@@ -158,8 +147,8 @@ namespace CS295_TermProject.Controllers
         {
             //replyContext.replies.Remove(reply);
             //replyContext.SaveChanges();
-            replyRepo.Delete(reply);
-            replyRepo.Save();
+            replyRepo.DeleteAsync(reply);
+            replyRepo.SaveAsync();
             return RedirectToAction("Browser");
         }
 
@@ -174,6 +163,12 @@ namespace CS295_TermProject.Controllers
                 }
             }
             return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

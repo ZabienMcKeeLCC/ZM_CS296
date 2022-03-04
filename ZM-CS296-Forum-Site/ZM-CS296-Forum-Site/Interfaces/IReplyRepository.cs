@@ -11,7 +11,7 @@ namespace ZM_CS296_Forum_Site.Interfaces
         public Task<IEnumerable<ForumReplyModel>> SelectAllAsync();
         void Insert(ForumReplyModel obj);
         Task<ForumReplyModel> SelectById(int id);
-        void Delete(ForumReplyModel obj);
-        void Save();
+        void DeleteAsync(ForumReplyModel obj);
+        void SaveAsync();
     }
 }

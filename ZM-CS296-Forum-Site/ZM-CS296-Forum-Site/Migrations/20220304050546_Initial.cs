@@ -47,35 +47,16 @@ namespace ZM_CS296_Forum_Site.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "posts",
+                name: "tags",
                 columns: table => new
                 {
-                    PostId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(2500)", maxLength: 2500, nullable: false),
-                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_posts", x => x.PostId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "replies",
-                columns: table => new
-                {
-                    ReplyId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PostId = table.Column<int>(type: "int", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(2500)", maxLength: 2500, nullable: false),
-                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_replies", x => x.ReplyId);
+                    table.PrimaryKey("PK_tags", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -184,15 +165,68 @@ namespace ZM_CS296_Forum_Site.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "replies",
-                columns: new[] { "ReplyId", "Date", "Message", "PostId", "Username" },
-                values: new object[] { 1, "1/2/2022", "THis is a test", 1, "Joseph Smith" });
+            migrationBuilder.CreateTable(
+                name: "posts",
+                columns: table => new
+                {
+                    PostId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(2500)", maxLength: 2500, nullable: false),
+                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PosterId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TagId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_posts", x => x.PostId);
+                    table.ForeignKey(
+                        name: "FK_posts_AspNetUsers_PosterId",
+                        column: x => x.PosterId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_posts_tags_TagId",
+                        column: x => x.TagId,
+                        principalTable: "tags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "replies",
+                columns: table => new
+                {
+                    ReplyId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(2500)", maxLength: 2500, nullable: false),
+                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReplierId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ForumPostModelPostId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_replies", x => x.ReplyId);
+                    table.ForeignKey(
+                        name: "FK_replies_AspNetUsers_ReplierId",
+                        column: x => x.ReplierId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_replies_posts_ForumPostModelPostId",
+                        column: x => x.ForumPostModelPostId,
+                        principalTable: "posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.InsertData(
-                table: "replies",
-                columns: new[] { "ReplyId", "Date", "Message", "PostId", "Username" },
-                values: new object[] { 2, "1/2/2022", "THis is a test", 1, "Zachary Johnson" });
+                table: "posts",
+                columns: new[] { "PostId", "Date", "Message", "PosterId", "TagId", "Title" },
+                values: new object[] { 1, null, "Test", null, null, "Test" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -232,6 +266,26 @@ namespace ZM_CS296_Forum_Site.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_posts_PosterId",
+                table: "posts",
+                column: "PosterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_posts_TagId",
+                table: "posts",
+                column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_replies_ForumPostModelPostId",
+                table: "replies",
+                column: "ForumPostModelPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_replies_ReplierId",
+                table: "replies",
+                column: "ReplierId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -252,16 +306,19 @@ namespace ZM_CS296_Forum_Site.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "posts");
-
-            migrationBuilder.DropTable(
                 name: "replies");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "posts");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "tags");
         }
     }
 }

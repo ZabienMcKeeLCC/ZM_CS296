@@ -10,8 +10,8 @@ using ZM_CS296_Forum_Site.Models;
 namespace ZM_CS296_Forum_Site.Migrations
 {
     [DbContext(typeof(MessageContext))]
-    [Migration("20220204054928_NewMigration")]
-    partial class NewMigration
+    [Migration("20220304050546_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -217,6 +217,21 @@ namespace ZM_CS296_Forum_Site.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("ZM_CS296_Forum_Site.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tags");
+                });
+
             modelBuilder.Entity("ZM_CS296_Forum_Site.Models.ForumPostModel", b =>
                 {
                     b.Property<int>("PostId")
@@ -232,18 +247,32 @@ namespace ZM_CS296_Forum_Site.Migrations
                         .HasMaxLength(2500)
                         .HasColumnType("nvarchar(2500)");
 
+                    b.Property<string>("PosterId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("TagId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("PostId");
 
+                    b.HasIndex("PosterId");
+
+                    b.HasIndex("TagId");
+
                     b.ToTable("posts");
+
+                    b.HasData(
+                        new
+                        {
+                            PostId = 1,
+                            Message = "Test",
+                            Title = "Test"
+                        });
                 });
 
             modelBuilder.Entity("ZM_CS296_Forum_Site.Models.ForumReplyModel", b =>
@@ -256,6 +285,9 @@ namespace ZM_CS296_Forum_Site.Migrations
                     b.Property<string>("Date")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ForumPostModelPostId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(2500)
@@ -264,32 +296,16 @@ namespace ZM_CS296_Forum_Site.Migrations
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<string>("ReplierId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ReplyId");
 
-                    b.ToTable("replies");
+                    b.HasIndex("ForumPostModelPostId");
 
-                    b.HasData(
-                        new
-                        {
-                            ReplyId = 1,
-                            Date = "1/2/2022",
-                            Message = "THis is a test",
-                            PostId = 1,
-                            Username = "Joseph Smith"
-                        },
-                        new
-                        {
-                            ReplyId = 2,
-                            Date = "1/2/2022",
-                            Message = "THis is a test",
-                            PostId = 1,
-                            Username = "Zachary Johnson"
-                        });
+                    b.HasIndex("ReplierId");
+
+                    b.ToTable("replies");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -341,6 +357,39 @@ namespace ZM_CS296_Forum_Site.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ZM_CS296_Forum_Site.Models.ForumPostModel", b =>
+                {
+                    b.HasOne("ZM_CS296_Forum_Site.Models.AppUser", "Poster")
+                        .WithMany()
+                        .HasForeignKey("PosterId");
+
+                    b.HasOne("ZM_CS296_Forum_Site.Models.Category", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId");
+
+                    b.Navigation("Poster");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("ZM_CS296_Forum_Site.Models.ForumReplyModel", b =>
+                {
+                    b.HasOne("ZM_CS296_Forum_Site.Models.ForumPostModel", null)
+                        .WithMany("Replies")
+                        .HasForeignKey("ForumPostModelPostId");
+
+                    b.HasOne("ZM_CS296_Forum_Site.Models.AppUser", "Replier")
+                        .WithMany()
+                        .HasForeignKey("ReplierId");
+
+                    b.Navigation("Replier");
+                });
+
+            modelBuilder.Entity("ZM_CS296_Forum_Site.Models.ForumPostModel", b =>
+                {
+                    b.Navigation("Replies");
                 });
 #pragma warning restore 612, 618
         }
