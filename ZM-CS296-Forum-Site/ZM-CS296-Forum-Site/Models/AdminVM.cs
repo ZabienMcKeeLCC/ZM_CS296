@@ -10,5 +10,7 @@ namespace ZM_CS296_Forum_Site.Models
     {
         public IEnumerable<AppUser> Users { get; set; }
         public IEnumerable<IdentityRole> Roles { get; set; }
+
+        public string CategoryName { get; set; }
     }
 }

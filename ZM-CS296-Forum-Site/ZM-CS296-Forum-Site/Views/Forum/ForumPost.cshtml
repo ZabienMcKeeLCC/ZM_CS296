@@ -1,29 +1,32 @@
-﻿@model ZM_CS296_Forum_Site.Models.ForumReplyModel
+﻿@model ZM_CS296_Forum_Site.Models.ForumPostModel
 @{
     ViewData["Title"] = "ForumPost";
 }
 
 <p>
     <div class="card border bg-light row" style="text-align:center">
-        Posted by: @ViewBag.Post.Username
+        Posted by: @ViewBag.Post.PostId
 
         <h1><p>@ViewBag.Post.Title</p></h1><br />
         <p>@ViewBag.Post.Message</p>
         <p>Posted At: @ViewBag.Post.Date</p>
-        <a asp-controller="Forum" asp-action="WriteReply" asp-route-id="Forum" asp-route-postId=@ViewBag.Post.PostId><p style="color:slategrey">Reply</p></a>
+        <a asp-controller="Forum" asp-action="WriteReply" asp-route-postId=@ViewBag.Post.PostId><p style="color:slategrey">Reply</p></a>
 
 
 
     </div>
 
-    <h2>Replies</h2><hr />
-    @foreach (ZM_CS296_Forum_Site.Models.ForumReplyModel reply in (List<ZM_CS296_Forum_Site.Models.ForumReplyModel>)ViewBag.replies)
-    {
-    <p>
-        <div class="card border bg-light row">
-            <!---  @reply.ReplyId|@reply.PostId -->
 
-            <b>@reply.Username: </b>
+    @if (ViewBag.Post.GetReplies().Count > 0)
+    {
+        <h2>Replies</h2><hr />
+        @foreach (ZM_CS296_Forum_Site.Models.ForumReplyModel reply in (List<ZM_CS296_Forum_Site.Models.ForumReplyModel>)ViewBag.Post.GetReplies())
+        {
+<p>
+        <div class="card border bg-light row">
+            
+
+            <b>@reply.Replier.UserName: </b>
             @reply.Message
             <p>Posted At: @reply.Date</p>
 
@@ -37,4 +40,5 @@
             
         </div>
     </p>
+    }
     }

@@ -15,10 +15,10 @@ namespace ZM_CS296_Forum_Site.Interfaces
         {
             ctx = inputContext;
         }
-        public void Delete(ForumReplyModel obj)
+        public async void DeleteAsync(ForumReplyModel obj)
         {
             ctx.replies.Remove(obj);
-            ctx.SaveChanges();
+            await ctx.SaveChangesAsync();
         }
 
         public void Insert(ForumReplyModel obj)
@@ -27,9 +27,9 @@ namespace ZM_CS296_Forum_Site.Interfaces
             ctx.SaveChanges();
         }
 
-        public void Save()
+        public async void SaveAsync()
         {
-            ctx.SaveChanges();
+            await ctx.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<ForumReplyModel>> SelectAllAsync()

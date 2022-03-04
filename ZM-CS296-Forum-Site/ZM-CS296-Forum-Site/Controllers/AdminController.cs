@@ -17,6 +17,7 @@ namespace CS295_TermProject.Controllers
         private RoleManager<IdentityRole> roleManager;
         private IPostRepository postRepo;
         private IReplyRepository replyRepo;
+        private ICategoryRepository categoryRepo;
         public AdminController(UserManager<AppUser> userMngr,
                                RoleManager<IdentityRole> roleMngr,
                                IPostRepository post,
@@ -150,6 +151,17 @@ namespace CS295_TermProject.Controllers
                 }
             }
             return View(model);
+        }
+
+        [HttpPost]
+        public async void AddTag(string name)
+        {
+            Category temp = new Category();
+            temp.Name = name;
+            if (ModelState.IsValid)
+            {
+                categoryRepo.Insert(temp);
+            }
         }
     }
 }

@@ -11,26 +11,43 @@ namespace ZM_CS296_Forum_Site.Interfaces
     public class PostRepository : IPostRepository
     {
 
-        private MessageContext ctx { get; set; }
+        public MessageContext ctx { get; set; }
         public PostRepository(MessageContext inputContext)
         {
             ctx = inputContext;
         }
-        public void Delete(ForumPostModel obj)
+
+        public IQueryable<ForumPostModel> Posts
+        {
+            get
+            {
+                return ctx.posts.Include(r => r.Poster)
+                                      .Include(r => r.Replies)
+                                      .ThenInclude(r => r.Replier);
+            }
+        }
+
+        public async Task<int> DeleteAsync(ForumPostModel obj)
         {
             ctx.posts.Remove(obj);
-            ctx.SaveChanges();
+            return await ctx.SaveChangesAsync();
         }
 
         public void Insert(ForumPostModel obj)
         {
-            ctx.posts.Add(obj);
+            ctx.posts.AddAsync(obj);
             ctx.SaveChanges();
         }
 
-        public void Save()
+        public async void SaveAsync()
         {
-            ctx.SaveChanges();
+            await ctx.SaveChangesAsync();
+        }
+
+        public async Task UpdatePostAsync(ForumPostModel post)
+        {
+            ctx.posts.Update(post);
+            await ctx.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<ForumPostModel>> SelectAllAsync()

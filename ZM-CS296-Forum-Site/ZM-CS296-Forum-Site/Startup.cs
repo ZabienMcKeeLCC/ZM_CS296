@@ -34,7 +34,9 @@ namespace ZM_CS296_Forum_Site
             services.AddControllersWithViews();
             services.AddDbContext<MessageContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MessageContext")));
             services.Configure<IdentityOptions>(options => options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
+            
             services.AddTransient<IPostRepository, PostRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IReplyRepository, ReplyRepository>();
 
             services.AddIdentity<AppUser, IdentityRole>()

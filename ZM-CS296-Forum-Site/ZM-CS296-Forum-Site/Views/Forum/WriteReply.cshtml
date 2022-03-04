@@ -1,14 +1,15 @@
 ﻿
-@model ZM_CS296_Forum_Site.Models.ForumReplyModel
+@model ZM_CS296_Forum_Site.Models.ReplyVM
 @{
     ViewData["Title"] = "WriteReply";
 }
 
 <h1>Write a Reponse</h1>
-<form asp-action="WriteReply" asp-route-postId=@ViewBag.Post.PostId method="post" style="background-color:lightgray">
+<form asp-action="WriteReply" method="post" style="background-color:lightgray">
     <div class="container">
         <div class="p-2 m-1">
-
+            @Model.PostId
+            <input type="hidden" asp-for="PostId" value="@Model.PostId" />
             <div>
                 <label asp-for="Message">Message: </label><br />
                 <textarea asp-for="Message"></textarea>

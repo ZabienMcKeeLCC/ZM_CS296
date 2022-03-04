@@ -13,13 +13,11 @@ namespace ZM_CS296_Forum_Site.Models
         [Key]
         public int ReplyId { get; set; }
         public int PostId { get; set; }
-
-        public string Username { get; set; }
-
-        [StringLength(2500,MinimumLength = 10, ErrorMessage = "Posts need to be between 10 and 2500 characters")]
+        
         [Required]
+        [StringLength(2500,MinimumLength = 10, ErrorMessage = "Posts need to be between 10 and 2500 characters")]
         public string Message { get; set; }
-
         public string Date { get; set; }
+        public AppUser Replier { get; set; }
     }
 }

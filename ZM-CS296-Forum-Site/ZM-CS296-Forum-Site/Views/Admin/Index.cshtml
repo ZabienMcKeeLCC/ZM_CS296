@@ -76,5 +76,10 @@ else
     </tbody>
 </table>
 }
-
+<h2>Tags</h2>
+<form method="post" asp-action="AddTag" asp-route-name="@Model">
+    <label></label>
+    <input asp-for="CategoryName"></input>
+    <button type="submit" class="btn btn-primary">Add Tag</button>
+</form>
 <div class="text-danger">@TempData["message"]</div>
